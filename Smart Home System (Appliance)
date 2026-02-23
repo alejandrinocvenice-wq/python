@@ -1,0 +1,136 @@
+class Appliance:
+    count_on = 0  # Class variable to count appliances that are currently ON
+
+    def __init__(self, name, power):
+        self.name = name
+        self._power = power  # in watts
+        self._is_on = False  # Initially OFF
+
+    @property
+    def power(self):
+        return self._power
+
+    @power.setter
+    def power(self, value):
+        if value < 0:
+            raise ValueError("Power cannot be negative")
+        self._power = value
+
+    @property
+    def is_on(self):
+        return self._is_on
+
+    def turn_on(self):
+        if self._power > 2000:
+            print(f"Cannot turn on {self.name}: power exceeds 2000 watts.")
+        else:
+            if not self._is_on:
+                Appliance.count_on += 1  # Increment counter when turning ON
+            self._is_on = True
+            print(f"{self.name} is now ON.")
+
+    def turn_off(self):
+        if self._is_on:
+            Appliance.count_on -= 1  # Decrement counter when turning OFF
+        self._is_on = False
+        print(f"{self.name} is now OFF.")
+
+    def operate(self):
+        if not self._is_on:
+            print("Device is off. Please turn it on first.")
+        else:
+            print(f"{self.name} is operating.")
+
+
+class WashingMachine(Appliance):
+    def operate(self):
+        if not self.is_on:
+            print("Device is off. Please turn it on first.")
+        else:
+            print("Washing machine is washing clothes.")
+
+
+class AirConditioner(Appliance):
+    def operate(self):
+        if not self.is_on:
+            print("Device is off. Please turn it on first.")
+        else:
+            print("Air conditioner is cooling the room.")
+
+
+class Microwave(Appliance):
+    def operate(self):
+        if not self.is_on:
+            print("Device is off. Please turn it on first.")
+        else:
+            print("Microwave is heating food.")
+
+
+class SmartTV(Appliance):  # New appliance type added for bonus
+    def operate(self):
+        if not self.is_on:
+            print("Device is off. Please turn it on first.")
+        else:
+            print("Smart TV is displaying content.")
+
+
+def total_power_usage(devices):
+    """Calculate total power usage of a list of devices."""
+    return sum(device.power for device in devices)
+
+
+# Demonstration of the code with iteration and bonus features
+if __name__ == "__main__":
+    # Create appliances
+    appliances = [
+        WashingMachine("Samsung Washer", 500),
+        AirConditioner("LG AC", 1200),
+        Microwave("Panasonic Microwave", 800),
+        SmartTV("Sony TV", 150)
+    ]
+
+    # Part 3: Use Iteration - Iterate over appliances to demonstrate functionality
+    print("=== Smart Home System Demonstration ===")
+    print("\n--- Initial State ---")
+    for app in appliances:
+        app.operate()  # Will show device is off message
+
+    print(f"\nTotal power usage: {total_power_usage(appliances)} watts")
+    print(f"Appliances currently ON: {Appliance.count_on}")
+
+    # Turn on some appliances
+    print("\n--- Turning ON Appliances ---")
+    for app in appliances:
+        app.turn_on()
+
+    print(f"Total power usage: {total_power_usage(appliances)} watts")
+    print(f"Appliances currently ON: {Appliance.count_on}")
+
+    # Operate each appliance
+    print("\n--- Operating Appliances ---")
+    for app in appliances:
+        app.operate()
+
+    # Try to turn on a high-power device (bonus: prevent turning on if power > 2000W)
+    print("\n--- Testing High Power Prevention ---")
+    high_power_ac = AirConditioner("HighPower AC", 2500)
+    high_power_ac.turn_on()  # Should fail
+
+    # Turn off one appliance and check counter
+    print("\n--- Turning OFF One Appliance ---")
+    appliances[0].turn_off()  # Turn off washing machine
+    print(f"Appliances currently ON: {Appliance.count_on}")
+
+    # Add new appliance without modifying the loop (bonus)
+    print("\n--- Adding New Appliance ---")
+    new_device = SmartTV("TCL TV", 100)
+    appliances.append(new_device)
+    new_device.turn_on()
+    print(f"Total appliances now: {len(appliances)}")
+    print(f"Appliances currently ON: {Appliance.count_on}")
+
+    # Final state
+    print("\n--- Final State ---")
+    for app in appliances:
+        print(f"{app.name}: {'ON' if app.is_on else 'OFF'}, Power: {app.power}W")
+    print(f"Total power usage: {total_power_usage(appliances)} watts")
